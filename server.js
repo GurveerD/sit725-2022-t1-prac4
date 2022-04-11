@@ -1,33 +1,42 @@
-let express = require("express");
-let app = express();
+const express = require("express");
+const app = express();
+app.use(express.json());
 
-//var app = require('express')();
-let http = require('http').createServer(app);
-let io = require('socket.io')(http);
+app.use(express.static(__dirname + "/public"));
+app.use(express.json());
 
+const { MongoClient } = require("mongodb");
+const MONGODB_URI = "mongodb+srv://user1:mongo%40123@hades.5ef5z.mongodb.net/techrev?retryWrites=true&w=majority";
 
-
-
-
-var port = process.env.PORT || 8080;
-
-app.use(express.static(__dirname + '/public'));
-
-
-
-//socket test
-io.on('connection', (socket) => {
-  console.log('a user connected');
-  socket.on('disconnect', () => {
-    console.log('user disconnected');
-  });
-  setInterval(()=>{
-    socket.emit('number', parseInt(Math.random()*10));
-  }, 1000);
-
+// to make a mongodb client
+const mongoClient = new MongoClient(MONGODB_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
 });
 
+// connect to the mongodb database
+mongoClient.connect((err) => {
+  if (err) throw err;
+  console.log("Database connected");
+});
+console.log("not connected");
 
-http.listen(port,()=>{
-  console.log("Listening on port ", port);
+// To Post to users collection
+let usersCollection;
+app.post("/api/users", (req, res) => {
+  usersCollection = mongoClient.db("techrev").collection("users");
+  usersCollection.insertOne(req.body, (err) => {
+    if (err) {
+      return res.status(500).json({ message: err.message });
+    }
+    res.json({
+      success: true,
+      message: "Your account has been created",
+    });
+  });
+});
+
+const port = 8080;
+app.listen(port, () => {
+  console.log("Running on port: " + port);
 });
