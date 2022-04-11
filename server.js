@@ -19,7 +19,6 @@ mongoClient.connect((err) => {
   if (err) throw err;
   console.log("Database connected");
 });
-console.log("not connected");
 
 // To Post to users collection
 let usersCollection;
