@@ -4,7 +4,6 @@ document.getElementById('form').onsubmit = (event) => {
 
   // Get form entries
   const formData = Object.fromEntries(new FormData(event.target));
-
   // Send request to server
   fetch('/api/reviews', {
     method: 'POST',

@@ -35,7 +35,7 @@ app.post("/api/users", (req, res) => {
   });
 });
 
-// To Post to users collection
+// To Post to reviews collection
 let reviewsCollection;
 app.post("/api/reviews", (req, res) => {
   usersCollection = mongoClient.db("techrev").collection("reviews");
