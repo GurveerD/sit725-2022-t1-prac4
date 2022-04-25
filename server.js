@@ -35,6 +35,21 @@ app.post("/api/users", (req, res) => {
   });
 });
 
+// To Post to users collection
+let reviewsCollection;
+app.post("/api/reviews", (req, res) => {
+  usersCollection = mongoClient.db("techrev").collection("reviews");
+  usersCollection.insertOne(req.body, (err) => {
+    if (err) {
+      return res.status(500).json({ message: err.message });
+    }
+    res.json({
+      success: true,
+      message: "Your review has been posted",
+    });
+  });
+});
+
 const port = 8080;
 app.listen(port, () => {
   console.log("Running on port: " + port);
